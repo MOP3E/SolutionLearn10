@@ -74,7 +74,7 @@ namespace ArcanoidSfml
             _ball = new Ball(_ballSprite, 5, (float)(Math.PI / 4 * 1));
 
             //создание кирпичей
-            _bricks = new List<Brick>()
+            _bricks = new List<Brick>
             {
                 new(_blueBrick, new Vector2f(300, 300))
             };

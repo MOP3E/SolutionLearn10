@@ -69,6 +69,7 @@ namespace ArcanoidSfml
             new BallCollision(24, 9, -12, 3),
             new BallCollision(24, 10, -12, 2),
             new BallCollision(24, 11, -12, 1),
+            //нижняя правя часть мяча
             new BallCollision(24, 13, -12, -1),
             new BallCollision(24, 14, -12, -2),
             new BallCollision(24, 15, -12, -3),
@@ -85,6 +86,7 @@ namespace ArcanoidSfml
             new BallCollision(15, 24, -3, -12),
             new BallCollision(14, 24, -2, -12),
             new BallCollision(13, 24, -1, -12),
+            //нижняя левая часть мяча
             new BallCollision(11, 24, 1, -12),
             new BallCollision(10, 24, 2, -12),
             new BallCollision(9, 24, 3, -12),
@@ -101,6 +103,127 @@ namespace ArcanoidSfml
             new BallCollision(0, 15, 12, -3),
             new BallCollision(0, 14, 12, -2),
             new BallCollision(0, 13, 12, -1),
+        };
+        
+        /// <summary>
+        /// Зоны коллизий с левого конца биты.
+        /// </summary>
+        private Dictionary<IntRect, float> _batLeftTipCollisions = new()
+        {
+            { new IntRect(new Vector2i(0, 7), new Vector2i(1, 13)), (float)(Math.PI + Math.PI / 6.0) },
+            { new IntRect(new Vector2i(1, 6), new Vector2i(1, 14)), (float)(Math.PI + Math.PI / 6.0) },
+            { new IntRect(new Vector2i(2, 5), new Vector2i(1, 15)), (float)(Math.PI + Math.PI / 6.0) },
+            { new IntRect(new Vector2i(3, 4), new Vector2i(1, 16)), (float)(Math.PI + Math.PI / 6.0) },
+            { new IntRect(new Vector2i(4, 3), new Vector2i(1, 17)), (float)(Math.PI + Math.PI / 6.0) },
+            { new IntRect(new Vector2i(5, 2), new Vector2i(1, 18)), (float)(Math.PI + Math.PI / 6.0) },
+            { new IntRect(new Vector2i(6, 1), new Vector2i(1, 19)), (float)(Math.PI + Math.PI / 6.0) },
+            { new IntRect(new Vector2i(7, 0), new Vector2i(1, 20)), (float)(Math.PI + Math.PI / 6.0) },
+        };
+        
+        /// <summary>
+        /// Зоны коллизий с правого конца биты.
+        /// </summary>
+        private Dictionary<IntRect, float> _batRightTipCollisions = new()
+        {
+            { new IntRect(new Vector2i(92, 0), new Vector2i(1, 20)), (float)(Math.PI + Math.PI / 6.0 * 5.0) },
+            { new IntRect(new Vector2i(93, 1), new Vector2i(1, 19)), (float)(Math.PI + Math.PI / 6.0 * 5.0) },
+            { new IntRect(new Vector2i(94, 2), new Vector2i(1, 18)), (float)(Math.PI + Math.PI / 6.0 * 5.0) },
+            { new IntRect(new Vector2i(95, 3), new Vector2i(1, 17)), (float)(Math.PI + Math.PI / 6.0 * 5.0) },
+            { new IntRect(new Vector2i(96, 4), new Vector2i(1, 16)), (float)(Math.PI + Math.PI / 6.0 * 5.0) },
+            { new IntRect(new Vector2i(97, 5), new Vector2i(1, 15)), (float)(Math.PI + Math.PI / 6.0 * 5.0) },
+            { new IntRect(new Vector2i(98, 6), new Vector2i(1, 14)), (float)(Math.PI + Math.PI / 6.0 * 5.0) },
+            { new IntRect(new Vector2i(99, 7), new Vector2i(1, 13)), (float)(Math.PI + Math.PI / 6.0 * 5.0) }
+        };
+
+        /// <summary>
+        /// Зоны коллизий по центру биты.
+        /// </summary>
+        private Dictionary<int, float> _batCollisions = new()
+        {
+            { 8, -1.22173047639603f },
+            { 9, -1.18682389135614f },
+            { 10, -1.15191730631626f },
+            { 11, -1.11701072127637f },
+            { 12, -1.08210413623648f },
+            { 13, -1.0471975511966f },
+            { 14, -1.01229096615671f },
+            { 15, -0.977384381116825f },
+            { 16, -0.942477796076938f },
+            { 17, -0.907571211037051f },
+            { 18, -0.872664625997165f },
+            { 19, -0.837758040957278f },
+            { 20, -0.802851455917392f },
+            { 21, -0.767944870877505f },
+            { 22, -0.733038285837618f },
+            { 23, -0.698131700797732f },
+            { 24, -0.663225115757845f },
+            { 25, -0.628318530717959f },
+            { 26, -0.593411945678072f },
+            { 27, -0.558505360638185f },
+            { 28, -0.523598775598299f },
+            { 29, -0.488692190558412f },
+            { 30, -0.453785605518526f },
+            { 31, -0.418879020478639f },
+            { 32, -0.383972435438752f },
+            { 33, -0.349065850398866f },
+            { 34, -0.314159265358979f },
+            { 35, -0.279252680319093f },
+            { 36, -0.244346095279206f },
+            { 37, -0.20943951023932f },
+            { 38, -0.174532925199433f },
+            { 39, -0.139626340159546f },
+            { 40, -0.10471975511966f },
+            { 41, -0.0698131700797732f },
+            { 42, -0.0349065850398866f },
+            { 43, 0f },
+            { 44, 0f },
+            { 45, 0f },
+            { 46, 0f },
+            { 47, 0f },
+            { 48, 0f },
+            { 49, 0f },
+            { 50, 0f },
+            { 51, 0f },
+            { 52, 0f },
+            { 53, 0f },
+            { 54, 0f },
+            { 55, 0f },
+            { 56, 0f },
+            { 57, 0.0349065850398866f },
+            { 58, 0.0698131700797732f },
+            { 59, 0.10471975511966f },
+            { 60, 0.139626340159546f },
+            { 61, 0.174532925199433f },
+            { 62, 0.20943951023932f },
+            { 63, 0.244346095279206f },
+            { 64, 0.279252680319093f },
+            { 65, 0.314159265358979f },
+            { 66, 0.349065850398866f },
+            { 67, 0.383972435438752f },
+            { 68, 0.418879020478639f },
+            { 69, 0.453785605518526f },
+            { 70, 0.488692190558412f },
+            { 71, 0.523598775598299f },
+            { 72, 0.558505360638185f },
+            { 73, 0.593411945678072f },
+            { 74, 0.628318530717959f },
+            { 75, 0.663225115757845f },
+            { 76, 0.698131700797732f },
+            { 77, 0.733038285837618f },
+            { 78, 0.767944870877505f },
+            { 79, 0.802851455917392f },
+            { 80, 0.837758040957278f },
+            { 81, 0.872664625997165f },
+            { 82, 0.907571211037051f },
+            { 83, 0.942477796076938f },
+            { 84, 0.977384381116825f },
+            { 85, 1.01229096615671f },
+            { 86, 1.0471975511966f },
+            { 87, 1.08210413623648f },
+            { 88, 1.11701072127637f },
+            { 89, 1.15191730631626f },
+            { 90, 1.18682389135614f },
+            { 91, 1.22173047639603f },
         };
 
         /// <summary>
@@ -215,7 +338,7 @@ namespace ArcanoidSfml
         /// <param name="bat">Бита.</param>
         /// <param name="bricks">Кирпичи.</param>
         /// <param name="brick">Кирпич, с котороым произошло столкновение.</param>
-        public bool CollisionTest(IntRect field, Bat? bat, List<Brick> bricks, out Brick? brick)
+        public bool CollisionTest(IntRect field, Bat bat, List<Brick> bricks, out Brick? brick)
         {
             brick = null;
 
@@ -237,16 +360,64 @@ namespace ArcanoidSfml
                 return false;
             }
 
+            //правый нижний угол мяча
+            Vector2f ballRightLower = new(Sprite.Position.X + Sprite.TextureRect.Width, Sprite.Position.Y + Sprite.TextureRect.Height);
+            //правый нижний угол биты
+            Vector2f batRightLower = new(bat.Sprite.Position.X + bat.Sprite.TextureRect.Width, bat.Sprite.Position.Y + bat.Sprite.TextureRect.Height);
+
             //проверить столкновение мяча с битой
+            if (ballRightLower.Y >= bat.Sprite.Position.Y && ballRightLower.X >= bat.Sprite.Position.X && Sprite.Position.X <= batRightLower.X)
+            {
+                //проверка столкновения нижней точки с плоскостью биты
+                float center = Sprite.Position.X + _bottom.Position.X;
+                //плоскость биты начинается с 8 пикселя и заканчивается на 91 пикселе
+                if (center >= bat.Sprite.Position.X + 8f && center <= bat.Sprite.Position.X + 91f)
+                {
+                    //попадание мяча в плоскость биты - отразить угол по вертикали и окорректировать его согласно пикселю
+                    int pixel = (int)Math.Round(center - bat.Sprite.Position.X);
+                    _angle = Pi2 - _angle + _batCollisions[pixel];
+                    CalculateIncrement();
+                    return false;
+                }
+
+                //проверить столкновение нижней полуокружности мяча с концами биты
+                //32-47 - нижняя правая часть мяча
+                for (int i = 32; i < 48; i++)
+                {
+                    foreach (KeyValuePair<IntRect, float> collision in _batLeftTipCollisions)
+                    {
+                        if (Sprite.Position.X + _collisions[i].Position.X >= bat.Sprite.Position.X + collision.Key.Left && 
+                            Sprite.Position.Y + _collisions[i].Position.Y >= bat.Sprite.Position.Y + collision.Key.Top)
+                        {
+                            //отражение от конца биты всегда даёт угол в 30 градусов в соответствующую сторону
+                            _angle = collision.Value;
+                            CalculateIncrement();
+                            return true;
+                        }
+                    }
+                }
+                //48-63 - нижняя левая часть мяча
+                for (int i = 48; i < 64; i++)
+                {
+                    foreach (KeyValuePair<IntRect, float> collision in _batLeftTipCollisions)
+                    {
+                        if (Sprite.Position.X + _collisions[i].Position.X <= bat.Sprite.Position.X + collision.Key.Left && 
+                            Sprite.Position.Y + _collisions[i].Position.Y >= bat.Sprite.Position.Y + collision.Key.Top)
+                        {
+                            //отражение от конца биты всегда даёт угол в 30 градусов в соответствующую сторону
+                            _angle = collision.Value;
+                            CalculateIncrement();
+                            return true;
+                        }
+                    }
+                }
+            }
 
             //проверить столкновение мяча с кирпичами
-            //левая верхняя граница мяча
-            Sprite s = Sprite;
-            Vector2f ballRightLower = new Vector2f(Sprite.Position.X + Sprite.TextureRect.Width, Sprite.Position.Y + Sprite.TextureRect.Height);
             for (int i = 0; i < bricks.Count; i++)
             {
                 //правая нижняя граница кирпича
-                Vector2f rightLower = new Vector2f(bricks[i].Position.X + bricks[i].Size.X, bricks[i].Position.Y + bricks[i].Size.Y);
+                Vector2f rightLower = new(bricks[i].Position.X + bricks[i].Size.X, bricks[i].Position.Y + bricks[i].Size.Y);
                 //проверить, совпадают ли в пространстве кирпич и мяч
                 if (ballRightLower.X < bricks[i].Position.X || ballRightLower.Y < bricks[i].Position.Y || Sprite.Position.X > rightLower.X || Sprite.Position.Y > rightLower.Y) continue;
 
@@ -269,7 +440,7 @@ namespace ArcanoidSfml
                     return false;
                 }
 
-                //проверить столкновение мяча с окружностью кирпича
+                //проверить столкновение мяча с углом кирпича
                 foreach (BallCollision collision in _collisions)
                 {
                     if (HitTest(collision.Position, bricks[i].Position, rightLower))
@@ -301,7 +472,7 @@ namespace ArcanoidSfml
         /// <returns></returns>
         private bool HitTest(Vector2Int pixelPosition, Vector2f brickPosition, Vector2f rightLower)
         {
-            Vector2f testPosition = new Vector2f(Sprite.Position.X + pixelPosition.X, Sprite.Position.Y + pixelPosition.Y);
+            Vector2f testPosition = new(Sprite.Position.X + pixelPosition.X, Sprite.Position.Y + pixelPosition.Y);
             return testPosition.X >= brickPosition.X && testPosition.Y >= brickPosition.Y && testPosition.X <= rightLower.X && testPosition.Y <= rightLower.Y;
         }
 
