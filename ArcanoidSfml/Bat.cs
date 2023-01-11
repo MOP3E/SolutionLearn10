@@ -50,7 +50,15 @@ namespace ArcanoidSfml
         {
             if (x > field.Width - Sprite.TextureRect.Width) x = field.Width - Sprite.TextureRect.Width;
             if (x < 0) x = 0;
-            Sprite.Position = new Vector2f(x, field.Height - Sprite.TextureRect.Height);
+            Sprite.Position = new Vector2f(x, field.Top + field.Height - Sprite.TextureRect.Height);
+        }
+   
+        /// <summary>
+        /// Отрисовка мяча.
+        /// </summary>
+        public void Draw(RenderTarget target, RenderStates states)
+        {
+            Sprite.Draw(target, states);
         }
     }
 }

@@ -16,7 +16,12 @@ namespace ArcanoidSfml
         /// Пи
         /// </summary>
         private const float Pi = (float)(Math.PI);
-
+        
+        /// <summary>
+        /// 3/2 Пи
+        /// </summary>
+        private const float Pi32 = (float)(Math.PI * 1.5);
+        
         /// <summary>
         /// Пи * 2
         /// </summary>
@@ -110,14 +115,14 @@ namespace ArcanoidSfml
         /// </summary>
         private Dictionary<IntRect, float> _batLeftTipCollisions = new()
         {
-            { new IntRect(new Vector2i(0, 7), new Vector2i(1, 13)), (float)(Math.PI + Math.PI / 6.0) },
-            { new IntRect(new Vector2i(1, 6), new Vector2i(1, 14)), (float)(Math.PI + Math.PI / 6.0) },
-            { new IntRect(new Vector2i(2, 5), new Vector2i(1, 15)), (float)(Math.PI + Math.PI / 6.0) },
-            { new IntRect(new Vector2i(3, 4), new Vector2i(1, 16)), (float)(Math.PI + Math.PI / 6.0) },
-            { new IntRect(new Vector2i(4, 3), new Vector2i(1, 17)), (float)(Math.PI + Math.PI / 6.0) },
-            { new IntRect(new Vector2i(5, 2), new Vector2i(1, 18)), (float)(Math.PI + Math.PI / 6.0) },
-            { new IntRect(new Vector2i(6, 1), new Vector2i(1, 19)), (float)(Math.PI + Math.PI / 6.0) },
-            { new IntRect(new Vector2i(7, 0), new Vector2i(1, 20)), (float)(Math.PI + Math.PI / 6.0) },
+            { new IntRect(new Vector2i(0, 7), new Vector2i(1, 13)), (float)(Math.PI + Math.PI / 9.0) },
+            { new IntRect(new Vector2i(1, 6), new Vector2i(1, 14)), (float)(Math.PI + Math.PI / 9.0) },
+            { new IntRect(new Vector2i(2, 5), new Vector2i(1, 15)), (float)(Math.PI + Math.PI / 9.0) },
+            { new IntRect(new Vector2i(3, 4), new Vector2i(1, 16)), (float)(Math.PI + Math.PI / 9.0) },
+            { new IntRect(new Vector2i(4, 3), new Vector2i(1, 17)), (float)(Math.PI + Math.PI / 9.0) },
+            { new IntRect(new Vector2i(5, 2), new Vector2i(1, 18)), (float)(Math.PI + Math.PI / 9.0) },
+            { new IntRect(new Vector2i(6, 1), new Vector2i(1, 19)), (float)(Math.PI + Math.PI / 9.0) },
+            { new IntRect(new Vector2i(7, 0), new Vector2i(1, 20)), (float)(Math.PI + Math.PI / 9.0) }
         };
         
         /// <summary>
@@ -125,14 +130,14 @@ namespace ArcanoidSfml
         /// </summary>
         private Dictionary<IntRect, float> _batRightTipCollisions = new()
         {
-            { new IntRect(new Vector2i(92, 0), new Vector2i(1, 20)), (float)(Math.PI + Math.PI / 6.0 * 5.0) },
-            { new IntRect(new Vector2i(93, 1), new Vector2i(1, 19)), (float)(Math.PI + Math.PI / 6.0 * 5.0) },
-            { new IntRect(new Vector2i(94, 2), new Vector2i(1, 18)), (float)(Math.PI + Math.PI / 6.0 * 5.0) },
-            { new IntRect(new Vector2i(95, 3), new Vector2i(1, 17)), (float)(Math.PI + Math.PI / 6.0 * 5.0) },
-            { new IntRect(new Vector2i(96, 4), new Vector2i(1, 16)), (float)(Math.PI + Math.PI / 6.0 * 5.0) },
-            { new IntRect(new Vector2i(97, 5), new Vector2i(1, 15)), (float)(Math.PI + Math.PI / 6.0 * 5.0) },
-            { new IntRect(new Vector2i(98, 6), new Vector2i(1, 14)), (float)(Math.PI + Math.PI / 6.0 * 5.0) },
-            { new IntRect(new Vector2i(99, 7), new Vector2i(1, 13)), (float)(Math.PI + Math.PI / 6.0 * 5.0) }
+            { new IntRect(new Vector2i(92, 0), new Vector2i(1, 20)), (float)(Math.PI + Math.PI / 9.0 * 8.0) },
+            { new IntRect(new Vector2i(93, 1), new Vector2i(1, 19)), (float)(Math.PI + Math.PI / 9.0 * 8.0) },
+            { new IntRect(new Vector2i(94, 2), new Vector2i(1, 18)), (float)(Math.PI + Math.PI / 9.0 * 8.0) },
+            { new IntRect(new Vector2i(95, 3), new Vector2i(1, 17)), (float)(Math.PI + Math.PI / 9.0 * 8.0) },
+            { new IntRect(new Vector2i(96, 4), new Vector2i(1, 16)), (float)(Math.PI + Math.PI / 9.0 * 8.0) },
+            { new IntRect(new Vector2i(97, 5), new Vector2i(1, 15)), (float)(Math.PI + Math.PI / 9.0 * 8.0) },
+            { new IntRect(new Vector2i(98, 6), new Vector2i(1, 14)), (float)(Math.PI + Math.PI / 9.0 * 8.0) },
+            { new IntRect(new Vector2i(99, 7), new Vector2i(1, 13)), (float)(Math.PI + Math.PI / 9.0 * 8.0) }
         };
 
         /// <summary>
@@ -373,9 +378,9 @@ namespace ArcanoidSfml
                 //плоскость биты начинается с 8 пикселя и заканчивается на 91 пикселе
                 if (center >= bat.Sprite.Position.X + 8f && center <= bat.Sprite.Position.X + 91f)
                 {
-                    //попадание мяча в плоскость биты - отразить угол по вертикали и окорректировать его согласно пикселю
+                    //попадание мяча в плоскость биты - отразить угол по вертикали либо задать новый согласно пикселю биты
                     int pixel = (int)Math.Round(center - bat.Sprite.Position.X);
-                    _angle = Pi2 - _angle + _batCollisions[pixel];
+                    _angle = _batCollisions[pixel] == 0 ? Pi2 - _angle : Pi32 + _batCollisions[pixel];
                     CalculateIncrement();
                     return false;
                 }
@@ -386,28 +391,31 @@ namespace ArcanoidSfml
                 {
                     foreach (KeyValuePair<IntRect, float> collision in _batLeftTipCollisions)
                     {
-                        if (Sprite.Position.X + _collisions[i].Position.X >= bat.Sprite.Position.X + collision.Key.Left && 
+                        if (Sprite.Position.X + _collisions[i].Position.X < bat.Sprite.Position.X + _batLeftTipCollisions.Count &&
+                            Sprite.Position.X + _collisions[i].Position.X >= bat.Sprite.Position.X + collision.Key.Left &&
                             Sprite.Position.Y + _collisions[i].Position.Y >= bat.Sprite.Position.Y + collision.Key.Top)
                         {
                             //отражение от конца биты всегда даёт угол в 30 градусов в соответствующую сторону
                             _angle = collision.Value;
                             CalculateIncrement();
-                            return true;
+                            return false;
                         }
                     }
                 }
+
                 //48-63 - нижняя левая часть мяча
                 for (int i = 48; i < 64; i++)
                 {
                     foreach (KeyValuePair<IntRect, float> collision in _batLeftTipCollisions)
                     {
-                        if (Sprite.Position.X + _collisions[i].Position.X <= bat.Sprite.Position.X + collision.Key.Left && 
+                        if (Sprite.Position.X + _collisions[i].Position.X >= ballRightLower.X - _batRightTipCollisions.Count &&
+                            Sprite.Position.X + _collisions[i].Position.X <= bat.Sprite.Position.X + collision.Key.Left &&
                             Sprite.Position.Y + _collisions[i].Position.Y >= bat.Sprite.Position.Y + collision.Key.Top)
                         {
                             //отражение от конца биты всегда даёт угол в 30 градусов в соответствующую сторону
                             _angle = collision.Value;
                             CalculateIncrement();
-                            return true;
+                            return false;
                         }
                     }
                 }

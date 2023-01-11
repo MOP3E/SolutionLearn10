@@ -28,16 +28,24 @@ namespace ArcanoidSfml
         /// <summary>
         /// Очки жизни кирпича.
         /// </summary>
-        public int Hitpoints;
+        private int _hitpoints;
+
+        /// <summary>
+        /// Очки за уничтожение кирпича.
+        /// </summary>
+        public readonly int Score;
 
         /// <summary>
         /// Создать кирпич.
         /// </summary>
         /// <param name="sprite">Спрайт кирпича.</param>
+        /// <param name="hitpoints">Прочность кирпича.</param>
         /// <param name="position">Позиция кирпича.</param>
-        public Brick(Sprite sprite, Vector2f position)
+        public Brick(Sprite sprite, int hitpoints, Vector2f position)
         {
             _sprite = sprite;
+            _hitpoints = hitpoints;
+            Score = hitpoints;
             Position = position;
         }
 
@@ -46,8 +54,8 @@ namespace ArcanoidSfml
         /// </summary>
         public bool Hit()
         {
-            Hitpoints--;
-            return Hitpoints <= 0;
+            _hitpoints--;
+            return _hitpoints <= 0;
         }
 
         public void Draw(RenderTarget target, RenderStates states)
