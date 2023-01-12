@@ -83,7 +83,7 @@ namespace ArcanoidSfml
         /// <summary>
         /// Число запасных мячей.
         /// </summary>
-        private static int _balls;
+        private static Balls _balls;
 
         /// <summary>
         /// Текущее состояние игры.
@@ -224,8 +224,7 @@ namespace ArcanoidSfml
                         //проверить, не умер ли мяч
                         if (death)
                         {
-                            _balls--;
-                            if (_balls >= 0)
+                            if (!_balls.Death())
                             {
                                 //можно продолжать играть - разместить на поле новый мяч и новую биту
                                 LevelStart(false);
@@ -276,7 +275,7 @@ namespace ArcanoidSfml
         private static void GameStart()
         {
             _score = 0;
-            _balls = 3;
+            _balls = new Balls(3);
             _level = 0;
             LevelStart(true);
         }
@@ -324,7 +323,7 @@ namespace ArcanoidSfml
                 case GameState.Game:
                     //нарисовать оставшиеся мячики, номер уровня и текущие очки
                     Vector2f ballPosition = _ball.Sprite.Position;
-                    for (int i = 0; i < _balls; i++)
+                    for (int i = 0; i < _balls.Count; i++)
                     {
                         _ball.Sprite.Position = new Vector2f(i * 37 + 10, 10);
                         _ball.Draw(_window, RenderStates.Default);
