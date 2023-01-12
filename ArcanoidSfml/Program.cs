@@ -183,8 +183,6 @@ namespace ArcanoidSfml
                         if (escPressed)
                         {
                             _window.Close();
-                            //нажатие на кнопку перехвачено и обработано
-                            escPressed = false;
                         }
                         break;
                     case GameState.Start:
@@ -264,7 +262,7 @@ namespace ArcanoidSfml
         /// <summary>
         /// Событие нажатия на кнопку закрытия окна.
         /// </summary>
-        private static void _window_Closed(object? sender, EventArgs e)
+        private static void _window_Closed(object sender, EventArgs e)
         {
             _window.Close();
         }
