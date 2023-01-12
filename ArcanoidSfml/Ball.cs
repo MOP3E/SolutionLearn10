@@ -348,7 +348,7 @@ namespace ArcanoidSfml
         /// <param name="bat">Бита.</param>
         /// <param name="bricks">Кирпичи.</param>
         /// <param name="brick">Кирпич, с котороым произошло столкновение.</param>
-        public bool CollisionTest(IntRect field, Bat bat, List<Brick> bricks, out Brick? brick)
+        public bool CollisionTest(IntRect field, Bat bat, List<Brick> bricks, out Brick brick)
         {
             brick = null;
 
