@@ -11,9 +11,9 @@ namespace ArcanoidSfml
     internal class Brick
     {
         /// <summary>
-        /// Спрайт кирпича.
+        /// Спрайты кирпича.
         /// </summary>
-        private Sprite _sprite;
+        private List<Sprite> _sprites;
 
         /// <summary>
         /// Позиция кирпича на экране.
@@ -23,7 +23,7 @@ namespace ArcanoidSfml
         /// <summary>
         /// Размер кирпича.
         /// </summary>
-        public Vector2Int Size => new(_sprite.TextureRect.Width, _sprite.TextureRect.Height);
+        public Vector2Int Size => new(_sprites[0].TextureRect.Width, _sprites[0].TextureRect.Height);
 
         /// <summary>
         /// Очки жизни кирпича.
@@ -31,21 +31,33 @@ namespace ArcanoidSfml
         private int _hitpoints;
 
         /// <summary>
+        /// Очки жизни кирпича.
+        /// </summary>
+        public int Hitpoints
+        {
+            get => _hitpoints;
+            set
+            {
+                _hitpoints = value;
+                Score = value;
+            }
+        }
+
+        /// <summary>
         /// Очки за уничтожение кирпича.
         /// </summary>
-        public readonly int Score;
+        public int Score { get; private set; }
 
         /// <summary>
         /// Создать кирпич.
         /// </summary>
-        /// <param name="sprite">Спрайт кирпича.</param>
+        /// <param name="sprites">Спрайты кирпича.</param>
         /// <param name="hitpoints">Прочность кирпича.</param>
         /// <param name="position">Позиция кирпича.</param>
-        public Brick(Sprite sprite, int hitpoints, Vector2f position)
+        public Brick(List<Sprite> sprites, int hitpoints, Vector2f position)
         {
-            _sprite = sprite;
-            _hitpoints = hitpoints;
-            Score = hitpoints;
+            _sprites = sprites;
+            Hitpoints = hitpoints;
             Position = position;
         }
 
@@ -58,10 +70,26 @@ namespace ArcanoidSfml
             return _hitpoints <= 0;
         }
 
+        /// <summary>
+        /// Отрисочка кирпича.
+        /// </summary>
         public void Draw(RenderTarget target, RenderStates states)
         {
-            _sprite.Position = Position;
-            _sprite.Draw(target, states);
+            switch (_hitpoints)
+            {
+                case 1:
+                    _sprites[0].Position = Position;
+                    _sprites[0].Draw(target, states);
+                    break;
+                case 2:
+                    _sprites[1].Position = Position;
+                    _sprites[1].Draw(target, states);
+                    break;
+                default:
+                    _sprites[2].Position = Position;
+                    _sprites[2].Draw(target, states);
+                    break;
+            }
         }
     }
 }

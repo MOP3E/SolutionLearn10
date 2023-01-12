@@ -18,6 +18,11 @@ namespace ArcanoidSfml
         private const float Pi = (float)(Math.PI);
         
         /// <summary>
+        /// 1/2 Пи
+        /// </summary>
+        private const float Pi12 = (float)(Math.PI * .5);
+        
+        /// <summary>
         /// 3/2 Пи
         /// </summary>
         private const float Pi32 = (float)(Math.PI * 1.5);
@@ -347,23 +352,36 @@ namespace ArcanoidSfml
         {
             brick = null;
 
+            //проверить, не коснулся ли мяч пола
+            if (Sprite.Position.Y + Sprite.TextureRect.Height > field.Top + field.Height)
+            {
+                //мяч погиб
+                return true;
+            }
+
             //проверить столкновение мяча со стенками и полом
-            if (Sprite.Position.X < field.Left || Sprite.Position.X + Sprite.TextureRect.Width > field.Left + field.Width)
+            bool wallHit = false;
+            if ((Sprite.Position.X < field.Left && _angle > Pi12 && _angle < Pi32) || 
+                (Sprite.Position.X + Sprite.TextureRect.Width > field.Left + field.Width  && (_angle < Pi12 || _angle > Pi32)))
             {
                 //столкновение с левой или правой стенкой, нужно отражать угол по горизонтали
                 _increment.X = -_increment.X;
                 _angle = Pi3 - _angle;
                 if (_angle > Pi2) _angle -= Pi2;
-                return false;
+                wallHit = true;
             }
 
-            if (Sprite.Position.Y < field.Top || Sprite.Position.Y + Sprite.TextureRect.Height > field.Top + field.Height)
+            if (Sprite.Position.Y < field.Top && _angle > Pi)
             {
-                //столкновение с верхней или нижней стенкой, нужно отражать угол по вертикали
+                //столкновение с верхней стенкой, нужно отражать угол по вертикали
                 _increment.Y = -_increment.Y;
                 _angle = Pi2 - _angle;
                 return false;
             }
+            //при проверке столкновения со стенами и потолком может быть ситуация когда мяч прилетает в угол и
+            //сталкивается одновременно со стенкой и потолком, поэтому ему нужно менять вектор движения дважды
+            //поэтому после проверки столкновения со стенкой нужно обязательно проверять столкновение с потолком
+            if (wallHit) return false;
 
             //правый нижний угол мяча
             Vector2f ballRightLower = new(Sprite.Position.X + Sprite.TextureRect.Width, Sprite.Position.Y + Sprite.TextureRect.Height);
@@ -461,6 +479,7 @@ namespace ArcanoidSfml
                                               (Math.Sqrt(_increment.X * _increment.X + _increment.Y * _increment.Y) *
                                                Math.Sqrt(collision.Vector.X * collision.Vector.X + collision.Vector.Y * collision.Vector.Y)));
                         _angle = _angle - angle * 2f + Pi;
+                        while (_angle > Pi2) _angle -= Pi2;
                         CalculateIncrement();
 
                         return false;

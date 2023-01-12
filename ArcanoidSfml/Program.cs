@@ -14,19 +14,9 @@ namespace ArcanoidSfml
         private static RenderWindow _window;
 
         /// <summary>
-        /// Красный кирпич.
+        /// Спрайты кирпичей.
         /// </summary>
-        private static Sprite _redBrick;
-
-        /// <summary>
-        /// Зелёный кирпич.
-        /// </summary>
-        private static Sprite _greenBrick;
-        
-        /// <summary>
-        /// Синий кирпич.
-        /// </summary>
-        private static Sprite _blueBrick;
+        private static List<Sprite> _brickSprites;
 
         /// <summary>
         /// Спрайт мяча.
@@ -38,6 +28,23 @@ namespace ArcanoidSfml
         /// </summary>
         private static Sprite _batSprite;
 
+        /// <summary>
+        /// Настройки уровней.
+        /// </summary>
+        private static List<LevelSettings> _levels = new()
+        {
+            new LevelSettings(0,0),
+            new LevelSettings(10,0),
+            new LevelSettings(15,0),
+            new LevelSettings(20,0),
+            new LevelSettings(25,0),
+            new LevelSettings(30,10),
+            new LevelSettings(35,15),
+            new LevelSettings(40,20),
+            new LevelSettings(45,25),
+            new LevelSettings(50,30),
+        };
+        
         /// <summary>
         /// Параметры игрового поля.
         /// </summary>
@@ -84,11 +91,6 @@ namespace ArcanoidSfml
         private static GameState _state;
 
         /// <summary>
-        /// Предыдущая позиция курсора мыши по оси Х.
-        /// </summary>
-        private static int _prevMousePos;
-
-        /// <summary>
         /// Предыдущее состояние клавиши ECS.
         /// </summary>
         private static bool _prevEsc;
@@ -98,8 +100,16 @@ namespace ArcanoidSfml
         /// </summary>
         private static Text _text;
 
+        /// <summary>
+        /// Игровой бог.
+        /// </summary>
+        private static Random _random;
+
         static void Main(string[] args)
         {
+            //молитва игровому богу
+            _random = new Random((int)(DateTime.Now.Ticks & 0xFFFFFFFF));
+
             //инициализация окна
             _window = new RenderWindow(new VideoMode(800, 600), "Арканоид");
             _window.SetFramerateLimit(60);
@@ -108,9 +118,12 @@ namespace ArcanoidSfml
             _window.SetMouseCursorGrabbed(true);
 
             //загрузка спрайтов
-            _redBrick = new Sprite(new Texture("red_brick.png"));
-            _blueBrick = new Sprite(new Texture("blue_brick.png"));
-            _greenBrick = new Sprite(new Texture("green_brick.png"));
+            _brickSprites = new()
+            {
+                new Sprite(new Texture("blue_brick.png")),
+                new Sprite(new Texture("green_brick.png")),
+                new Sprite(new Texture("red_brick.png")),
+            };
             _ballSprite = new Sprite(new Texture("ball.png"));
             _batSprite = new Sprite(new Texture("bat.png"));
 
@@ -124,7 +137,6 @@ namespace ArcanoidSfml
             //создание часов
             Clock clock = new();
             clock.Restart();
-            _prevMousePos = Mouse.GetPosition(_window).X;
 
             _state = GameState.MainMenu;
             _record = 0;
@@ -182,24 +194,31 @@ namespace ArcanoidSfml
                             _ball.Speed = 400;
                             _state = GameState.Game;
                         }
+
+                        //передвинуть биту
+                        _bat.Move(_field, Mouse.GetPosition(_window).X);
                         break;
                     case GameState.Game:
                         //передвинуть мяч
                         _ball.Move(deltaTime);
 
                         //передвинуть биту
-                        //int mousePos = Mouse.GetPosition(_window).X;
-                        _bat.Move(_field, (int)(_bat.Sprite.Position.X + MouseState.LastMove.X));
-                        //_prevMousePos = mousePos;
+                        _bat.Move(_field, Mouse.GetPosition(_window).X);
 
                         //проверить столкновения мяча
                         bool death = _ball.CollisionTest(_field, _bat, _bricks, out Brick crackedBrick);
                         
                         //проверить, не уничтожен ли кирпич
-                        if (crackedBrick != null)
+                        if (crackedBrick != null && crackedBrick.Hit())
                         {
                             _score += crackedBrick.Score;
                             _bricks.Remove(crackedBrick);
+                            //проверить, не пройден ли уровень
+                            if (_bricks.Count <= 0)
+                            {
+                                //перейти на следующий уровень
+                                LevelStart(true);
+                            }
                         }
 
                         //проверить, не умер ли мяч
@@ -243,6 +262,9 @@ namespace ArcanoidSfml
             }
         }
 
+        /// <summary>
+        /// Событие нажатия на кнопку закрытия окна.
+        /// </summary>
         private static void _window_Closed(object? sender, EventArgs e)
         {
             _window.Close();
@@ -260,42 +282,79 @@ namespace ArcanoidSfml
         }
 
         /// <summary>
-        /// Начало нового уровня.
+        /// Начало нового уровня, либо переинициализация текущего.
         /// </summary>
+        /// <param name="newLevel">Истина - это новый уровень.</param>
         private static void LevelStart(bool newLevel)
         {
-            if(newLevel) _level++;
+            if(newLevel)
+            {
+                _level++;
+                //проверить, не закончились ли уровни?
+                if(_level > _levels.Count)
+                {
+                    //уровни закончились - конец игры
+                    _state = _score > _record ? GameState.GamoverRecord : GameState.Gamover;
+                    return;
+                }
+            }
             NewBall();
             NewBat();
             if(newLevel) GenerateLevel();
             _state = GameState.Start;
         }
 
+        /// <summary>
+        /// Отрисовка игрового экрана.
+        /// </summary>
         private static void Draw()
         {
             switch (_state)
             {
                 case GameState.MainMenu:
-                    //TODO: нарисовать главное меню
-                    DrawText("АРКАНОИД", 72, Color.White, 195, 0 + 150);
-                    DrawText($"Результат {_score}", 24, Color.White, 332, 90 + 150);
-                    DrawText($"Рекорд {_record}", 24, Color.White, 348, 130 + 150);
-                    DrawText("Щёлкните мышью для начала игры.", 24, Color.White, 186, 170 + 150);
-                    DrawText("Нажмите [ESC] для выхода из игры.", 24, Color.White, 184, 210 + 150);
+                    //нарисовать главное меню
+                    int verticalOffset = 150;
+                    DrawText("АРКАНОИД", 72, Color.White, 195, 0 + verticalOffset);
+                    DrawText($"Результат {_score}", 24, Color.White, 332, 90 + verticalOffset);
+                    DrawText($"Рекорд {_record}", 24, Color.White, 348, 130 + verticalOffset);
+                    DrawText("Щёлкните мышью для начала игры.", 24, Color.White, 186, 170 + verticalOffset);
+                    DrawText("Нажмите [ESC] для выхода из игры.", 24, Color.White, 184, 210 + verticalOffset);
                     break;
                 case GameState.Start:
                 case GameState.Game:
-                    //TODO: нарисовать оставшиеся мячики и текущие очки
+                    //нарисовать оставшиеся мячики, номер уровня и текущие очки
+                    Vector2f ballPosition = _ball.Sprite.Position;
+                    for (int i = 0; i < _balls; i++)
+                    {
+                        _ball.Sprite.Position = new Vector2f(i * 37 + 10, 10);
+                        _ball.Draw(_window, RenderStates.Default);
+                    }
+                    _ball.Sprite.Position = ballPosition;
+                    DrawText($"{_score}", 24, Color.White, 740, 8);
+                    DrawText($"Уровень {_level}", 24, Color.White, 342, 8);
+
+                    //нарисовать мяч и биту
                     _bat.Draw(_window, RenderStates.Default);
                     _ball.Draw(_window, RenderStates.Default);
-                    _bat.Draw(_window, RenderStates.Default);
+
+                    //нарисовать подсказку
+                    if(_state == GameState.Start) DrawText("Щёлкните мышью для запуска мяча.", 24, Color.White, 182, 382);
+
+                    //нарисовать кирпичи
                     foreach (Brick brick in _bricks) brick.Draw(_window, RenderStates.Default);
                     break;
                 case GameState.Gamover:
-                    //TODO: нарисовать сообщение об окончании игры
+                    //нарисовать сообщение об окончании игры
+                    DrawText("ИГРА ОКОНЧЕНА", 72, Color.White, 89, 210);
+                    DrawText($"Ваши очки {_score}", 24, Color.White, 319, 300);
+                    DrawText("Нажмите [ESC] для возврата в меню.", 24, Color.White, 182, 340);
                     break;
                 case GameState.GamoverRecord:
-                    //TODO: нарисовать сообщение об окончании игры с сообщением о рекорде
+                    //нарисовать сообщение об окончании игры с сообщением о рекорде
+                    DrawText("ИГРА ОКОНЧЕНА", 72, Color.White, 89, 190);
+                    DrawText($"Ваши очки {_score}", 24, Color.White, 319, 280);
+                    DrawText("Поздравляем, вы побили рекорд!", 24, Color.White, 202, 320);
+                    DrawText("Нажмите [ESC] для возврата в меню.", 24, Color.White, 182, 360);
                     break;
             }
         }
@@ -305,15 +364,38 @@ namespace ArcanoidSfml
         /// </summary>
         private static void GenerateLevel()
         {
+            //заполнение поля синими кирпичами
             _bricks = new List<Brick>();
             for (int i = 0; i < 10; i++)
             {
                 for (int j = 0; j < 10; j++)
                 {
                     //синий кирпич имеет одно очко жизни
-                    _bricks.Add(new(_blueBrick, 1, new Vector2f(j * 70 + 60, i * 25 + 60)));
+                    _bricks.Add(new(_brickSprites, 1, new Vector2f(j * 70 + 60, _field.Top + i * 25 + 60)));
                 }
             }
+
+            //превращение синих кирпичей в зелёные и красные
+            List<int> greens = new();
+            List<int> reds = new();
+            List<int> numbers = new();
+            for (int i = 0; i < 100; i++) numbers.Add(i);
+            for (int i = 0; i < _levels[_level-1].Greens; i++)
+            {
+                int pos = _random.Next(numbers.Count);
+                greens.Add(numbers[pos]);
+                numbers.RemoveAt(pos);
+            }
+            for (int i = 0; i < _levels[_level-1].Reds; i++)
+            {
+                int pos = _random.Next(numbers.Count);
+                reds.Add(numbers[pos]);
+                numbers.RemoveAt(pos);
+            }
+            //зелёный кирпич имеет два очка жизни
+            foreach (int green in greens) _bricks[green].Hitpoints = 2;
+            //красный кирпич имеет три очка жизни
+            foreach (int red in reds) _bricks[red].Hitpoints = 3;
         }
 
         /// <summary>
@@ -322,7 +404,7 @@ namespace ArcanoidSfml
         private static void NewBat()
         {
             _bat = new Bat(_batSprite);
-            _bat.Move(_field, 50f);
+            _bat.Move(_field, Mouse.GetPosition(_window).X);
         }
 
         /// <summary>

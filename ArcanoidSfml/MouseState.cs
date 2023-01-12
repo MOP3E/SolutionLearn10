@@ -56,16 +56,6 @@ namespace ArcanoidSfml
         public static bool RightButtonReleased;
 
         /// <summary>
-        /// Предыдущая позиция мыши.
-        /// </summary>
-        private static Vector2Int _prevPos;
-
-        /// <summary>
-        /// Последнее перемещение мыши.
-        /// </summary>
-        public static Vector2Int LastMove;
-
-        /// <summary>
         /// Статический конструктор.
         /// </summary>
         static MouseState()
@@ -78,12 +68,6 @@ namespace ArcanoidSfml
         /// </summary>
         public static void ButtonsTest()
         {
-            //перемещение мыши
-            Vector2i position = Mouse.GetPosition();
-            LastMove = new Vector2Int(position.X, position.Y) - _prevPos;
-            _prevPos.X = position.X;
-            _prevPos.Y = position.Y;
-
             //левая кнопка мыши
             LeftButtonPressed = false;
             LeftButtonReleased = false;
